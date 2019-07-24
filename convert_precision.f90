@@ -43,7 +43,7 @@ program convert_precision
   endif
   !
   do while(istatus.eq.0)
-    read(iunit,*,iostat=istatus) fname
+    read(iunit,'(A)',iostat=istatus) fname
     if(istatus.ne.0) exit
     call MPI_FILE_OPEN(MPI_COMM_WORLD,trim(fname),MPI_MODE_RDONLY,MPI_INFO_NULL,fh,ierr)
     call MPI_FILE_GET_SIZE(fh,filesize,ierr)

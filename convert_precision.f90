@@ -73,7 +73,8 @@ program convert_precision
         disp_myid = nreals/nproc
       endif
     endif
-    call MPI_SCAN(disp_myid,disp,1,MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,ierr)
+    call MPI_SCAN(MPI_IN_PLACE,disp_myid,1,MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,ierr)
+    disp = disp_myid ! not done in the MPI_SCAN call to avoid issues with the difference in integer kinds
     call MPI_FILE_SET_VIEW(fh,disp*r_in,MPI_REAL_R_IN,MPI_REAL_R_IN,'native',MPI_INFO_NULL,ierr)
     call MPI_FILE_READ(fh,data_in,nreals_myid,MPI_REAL_R_IN,MPI_STATUS_IGNORE,ierr)
     call MPI_FILE_CLOSE(fh,ierr)

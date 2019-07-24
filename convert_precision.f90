@@ -95,6 +95,7 @@ program convert_precision
     call MPI_FILE_GET_SIZE(fh,filesize,ierr)
     if(filesize.ne.nreals*r_out) then
       if(myid.eq.0) print*, 'Error, unexpected size of the output file.'
+      if(myid.eq.0) print*, 'Expected size: ', nreals*r_out, 'Actual size: ', filesize
       if(myid.eq.0) print*, 'Aborting...'
       exit
     endif

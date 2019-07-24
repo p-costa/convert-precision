@@ -92,6 +92,12 @@ program convert_precision
     ! final step: check converted data
     !
     call MPI_FILE_OPEN(MPI_COMM_WORLD,trim(fname)//trim(out_ext),MPI_MODE_RDONLY,MPI_INFO_NULL,fh,ierr)
+    call MPI_FILE_GET_SIZE(fh,filesize,ierr)
+    if(filesize.ne.nreals*r_out) then
+      if(myid.eq.0) print*, 'Error, unexpected size of the output file.'
+      if(myid.eq.0) print*, 'Aborting...'
+      exit
+    endif
     call MPI_FILE_SET_VIEW(fh,disp*r_out,MPI_REAL_R_OUT,MPI_REAL_R_OUT,'native',MPI_INFO_NULL,ierr)
     call MPI_FILE_READ(fh,data_out,nreals_myid,MPI_REAL_R_OUT,MPI_STATUS_IGNORE,ierr)
     call MPI_FILE_CLOSE(fh,ierr)

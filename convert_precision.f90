@@ -12,7 +12,7 @@ program convert_precision
   !
   integer :: myid,nproc,ierr
   integer :: iunit,istatus
-  character(len=100) :: fname
+  character(len=1024) :: fname
   integer(kind=MPI_OFFSET_KIND) :: filesize,disp
   integer :: MPI_REAL_R_IN, MPI_REAL_R_OUT
   integer :: fh

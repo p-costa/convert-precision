@@ -13,10 +13,10 @@ program convert_precision
   integer :: myid,nproc,ierr
   integer :: iunit,istatus
   character(len=1024) :: fname
-  integer(kind=MPI_OFFSET_KIND) :: filesize,disp
+  integer(kind=MPI_OFFSET_KIND) :: filesize,disp,nreals,nreals_myid
   integer :: MPI_REAL_R_IN, MPI_REAL_R_OUT
   integer :: fh
-  integer :: nreals,nreals_myid,disp_myid
+  !integer :: nreals,nreals_myid,disp_myid
   integer :: i,error
   !
   call MPI_INIT(ierr)
@@ -65,18 +65,17 @@ program convert_precision
     ! calculate displacements
     !
     if(myid.eq.0) then
-      disp_myid = 0
+      disp = 0
     else
       if(myid+1-1.le.mod(nreals,nproc)) then
-        disp_myid = nreals/nproc+1
+        disp = nreals/nproc+1
       else
-        disp_myid = nreals/nproc
+        disp = nreals/nproc
       endif
     endif
-    call MPI_SCAN(MPI_IN_PLACE,disp_myid,1,MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,ierr)
-    disp = disp_myid ! not done in the MPI_SCAN call to avoid issues with the difference in integer kinds
+    call MPI_SCAN(MPI_IN_PLACE,disp,1,MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,ierr)
     call MPI_FILE_SET_VIEW(fh,disp*r_in,MPI_REAL_R_IN,MPI_REAL_R_IN,'native',MPI_INFO_NULL,ierr)
-    call MPI_FILE_READ(fh,data_in,nreals_myid,MPI_REAL_R_IN,MPI_STATUS_IGNORE,ierr)
+    call MPI_FILE_READ(fh,data_in,int(nreals_myid),MPI_REAL_R_IN,MPI_STATUS_IGNORE,ierr)
     call MPI_FILE_CLOSE(fh,ierr)
     allocate(data_out(nreals_myid))
     do i=1,nreals_myid
@@ -87,7 +86,7 @@ program convert_precision
     call MPI_FILE_SET_SIZE(fh,filesize,ierr)  ! guarantee overwriting
     call MPI_FILE_SET_VIEW(fh,disp*r_out, MPI_REAL_R_OUT,MPI_REAL_R_OUT, 'native', &
          MPI_INFO_NULL, ierr)
-    call MPI_FILE_WRITE(fh,data_out,nreals_myid,MPI_REAL_R_OUT,MPI_STATUS_IGNORE,ierr)
+    call MPI_FILE_WRITE(fh,data_out,int(nreals_myid),MPI_REAL_R_OUT,MPI_STATUS_IGNORE,ierr)
     call MPI_FILE_CLOSE(fh,ierr)
     !
     ! final step: check converted data
@@ -101,7 +100,7 @@ program convert_precision
       exit
     endif
     call MPI_FILE_SET_VIEW(fh,disp*r_out,MPI_REAL_R_OUT,MPI_REAL_R_OUT,'native',MPI_INFO_NULL,ierr)
-    call MPI_FILE_READ(fh,data_out,nreals_myid,MPI_REAL_R_OUT,MPI_STATUS_IGNORE,ierr)
+    call MPI_FILE_READ(fh,data_out,int(nreals_myid),MPI_REAL_R_OUT,MPI_STATUS_IGNORE,ierr)
     call MPI_FILE_CLOSE(fh,ierr)
     error = 0
     do i=1,nreals_myid

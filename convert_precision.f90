@@ -17,7 +17,6 @@ program convert_precision
   double precision :: disp_r
   integer :: MPI_REAL_R_IN, MPI_REAL_R_OUT
   integer :: fh
-  !integer :: nreals,nreals_myid,disp_myid
   integer :: i,error
   !
   call MPI_INIT(ierr)

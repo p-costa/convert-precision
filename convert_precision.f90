@@ -14,6 +14,7 @@ program convert_precision
   integer :: iunit,istatus
   character(len=1024) :: fname
   integer(kind=MPI_OFFSET_KIND) :: filesize,disp,nreals,nreals_myid
+  double precision :: disp_r
   integer :: MPI_REAL_R_IN, MPI_REAL_R_OUT
   integer :: fh
   !integer :: nreals,nreals_myid,disp_myid
@@ -73,7 +74,9 @@ program convert_precision
         disp = nreals/nproc
       endif
     endif
-    call MPI_SCAN(MPI_IN_PLACE,disp,1,MPI_INTEGER,MPI_SUM,MPI_COMM_WORLD,ierr)
+    disp_r = dble(disp)
+    call MPI_SCAN(MPI_IN_PLACE,disp_r,1,MPI_DOUBLE_PRECISION,MPI_SUM,MPI_COMM_WORLD,ierr)
+    disp = int(disp_r,MPI_OFFSET_KIND)
     call MPI_FILE_SET_VIEW(fh,disp*r_in,MPI_REAL_R_IN,MPI_REAL_R_IN,'native',MPI_INFO_NULL,ierr)
     call MPI_FILE_READ(fh,data_in,int(nreals_myid),MPI_REAL_R_IN,MPI_STATUS_IGNORE,ierr)
     call MPI_FILE_CLOSE(fh,ierr)

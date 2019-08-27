@@ -9,5 +9,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: Install mpif90 gfortran
+      run: sudo apt-get install gfortran libopenmpi-dev
     - name: Compile
       run: mpif90 convert_precision.f90

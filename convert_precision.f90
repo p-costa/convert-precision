@@ -2,8 +2,10 @@ program convert_precision
   use mpi
   implicit none
   real, parameter :: small = 1.e-5
-  integer, parameter :: r_in  = 8
-  integer, parameter :: r_out = 4
+  integer, parameter :: sp = KIND(1.d0)
+  integer, parameter :: dp = KIND(1. )
+  integer, parameter :: r_in  = dp
+  integer, parameter :: r_out = sp
   character(len=*), parameter :: out_ext = '.converted'
   character(len=*), parameter :: input_file = 'file.in'
   !
@@ -22,10 +24,10 @@ program convert_precision
   call MPI_INIT(ierr)
   call MPI_COMM_SIZE(MPI_COMM_WORLD,nproc,ierr)
   call MPI_COMM_RANK(MPI_COMM_WORLD,myid,ierr)
-  if(r_in.eq.8.and.r_out.eq.4) then
+  if(r_in.eq.dp.and.r_out.eq.sp) then
     MPI_REAL_R_IN  = MPI_DOUBLE_PRECISION
     MPI_REAL_R_OUT = MPI_REAL
-  elseif(r_in.eq.4.and.r_out.eq.8) then
+  elseif(r_in.eq.sp.and.r_out.eq.dp) then
     MPI_REAL_R_IN  = MPI_REAL
     MPI_REAL_R_OUT = MPI_DOUBLE_PRECISION
   else
@@ -33,7 +35,7 @@ program convert_precision
     if(myid.eq.0) print*, 'Aborting...'
     call MPI_FINALIZE(ierr)
   endif
-  isize = sizeof(disp)
+  isize = storage_size(disp)*8
   call MPI_TYPE_MATCH_SIZE(MPI_TYPECLASS_INTEGER, isize, MPI_LONG_LONG_INTEGER, ierr)
   !
   istatus = 0
@@ -49,7 +51,7 @@ program convert_precision
     if(istatus.ne.0) exit
     call MPI_FILE_OPEN(MPI_COMM_WORLD,trim(fname),MPI_MODE_RDONLY,MPI_INFO_NULL,fh,ierr)
     call MPI_FILE_GET_SIZE(fh,filesize,ierr)
-    if(mod(filesize,r_in).ne.0) then
+    if(mod(filesize,int(r_in,kind(filesize))).ne.0) then
       if(myid.eq.0) print*, 'Error while reading file ',fname,' with size ',filesize,' not divisable by ',r_in,'.'
       if(myid.eq.0) print*, 'Aborting...'
       istatus = 1000
@@ -57,7 +59,7 @@ program convert_precision
     if(istatus.ne.0) exit
     ! divide reals evenly
     nreals = filesize/r_in
-    if(myid+1.le.mod(nreals,nproc)) then
+    if(myid+1.le.mod(nreals,int(nproc,kind(nreals)))) then
       nreals_myid = nreals/nproc+1
     else
       nreals_myid = nreals/nproc
@@ -69,7 +71,7 @@ program convert_precision
     if(myid.eq.0) then
       disp = 0
     else
-      if(myid+1-1.le.mod(nreals,nproc)) then
+      if(myid+1-1.le.mod(nreals,int(nproc,kind(nreals)))) then
         disp = nreals/nproc+1
       else
         disp = nreals/nproc

@@ -35,7 +35,7 @@ program convert_precision
     if(myid.eq.0) print*, 'Aborting...'
     call MPI_FINALIZE(ierr)
   endif
-  isize = storage_size(disp)*8
+  isize = storage_size(disp)/8
   call MPI_TYPE_MATCH_SIZE(MPI_TYPECLASS_INTEGER, isize, MPI_LONG_LONG_INTEGER, ierr)
   !
   istatus = 0

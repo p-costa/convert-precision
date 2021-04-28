@@ -2,8 +2,8 @@ program convert_precision
   use mpi
   implicit none
   real, parameter :: small = 1.e-5
-  integer, parameter :: sp = KIND(1.d0)
-  integer, parameter :: dp = KIND(1. )
+  integer, parameter :: sp = KIND(1.  )
+  integer, parameter :: dp = KIND(1.d0)
   integer, parameter :: r_in  = dp
   integer, parameter :: r_out = sp
   character(len=*), parameter :: out_ext = '.converted'

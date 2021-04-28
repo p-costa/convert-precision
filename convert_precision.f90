@@ -7,7 +7,7 @@ program convert_precision
   integer, parameter :: r_in  = dp
   integer, parameter :: r_out = sp
   character(len=*), parameter :: out_ext = '.converted'
-  character(len=*), parameter :: input_file = 'file.in'
+  character(len=*), parameter :: input_file = 'files.in'
   !
   real(kind=r_in ), allocatable, dimension(:) :: data_in
   real(kind=r_out), allocatable, dimension(:) :: data_out

@@ -12,4 +12,7 @@ jobs:
     - name: Install mpif90 gfortran
       run: sudo apt-get install gfortran libopenmpi-dev
     - name: Compile
-      run: mpif90 convert_precision.f90
+      run: |
+        mpif90 convert_precision.F90
+        mpif90 -D_SINGLE_TO_DOUBLE convert_precision.F90
+        mpif90 -D_DOUBLE_TO_SINGLE convert_precision.F90

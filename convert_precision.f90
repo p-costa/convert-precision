@@ -1,9 +1,9 @@
 program convert_precision
-  use mpi
+  use mpi_f08
   implicit none
   real, parameter :: small = 1.e-5
-  integer, parameter :: sp = KIND(1.  )
-  integer, parameter :: dp = KIND(1.d0)
+  integer, parameter :: sp = selected_real_kind(6 , 37)
+  integer, parameter :: dp = selected_real_kind(15,307)
   integer, parameter :: r_in  = dp
   integer, parameter :: r_out = sp
   character(len=*), parameter :: out_ext = '.converted'
@@ -16,9 +16,10 @@ program convert_precision
   integer :: iunit,istatus
   character(len=1024) :: fname
   integer(kind=MPI_OFFSET_KIND) :: filesize,disp,nreals,nreals_myid
-  integer :: MPI_REAL_R_IN, MPI_REAL_R_OUT
-  integer :: isize,MPI_INTEGER_DISP
-  integer :: fh
+  type(MPI_DATATYPE) :: MPI_REAL_R_IN, MPI_REAL_R_OUT
+  type(MPI_DATATYPE) :: MPI_INTEGER_DISP
+  integer :: isize
+  type(MPI_FILE) :: fh
   integer :: i,error
   !
   call MPI_INIT(ierr)

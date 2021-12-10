@@ -4,8 +4,16 @@ program convert_precision
   real, parameter :: small = 1.e-5
   integer, parameter :: sp = selected_real_kind(6 , 37)
   integer, parameter :: dp = selected_real_kind(15,307)
+#ifdef _SINGLE_TO_DOUBLE
+  integer, parameter :: r_in  = sp
+  integer, parameter :: r_out = dp
+#elif  _DOUBLE_TO_SINGLE
   integer, parameter :: r_in  = dp
   integer, parameter :: r_out = sp
+#else /* default double -> single */
+  integer, parameter :: r_in  = dp
+  integer, parameter :: r_out = sp
+#endif
   character(len=*), parameter :: out_ext = '.converted'
   character(len=*), parameter :: input_file = 'files.in'
   !
@@ -28,9 +36,11 @@ program convert_precision
   if(r_in.eq.dp.and.r_out.eq.sp) then
     MPI_REAL_R_IN  = MPI_DOUBLE_PRECISION
     MPI_REAL_R_OUT = MPI_REAL
+    if(myid.eq.0) print*, 'Single to Double precision conversion'
   elseif(r_in.eq.sp.and.r_out.eq.dp) then
     MPI_REAL_R_IN  = MPI_REAL
     MPI_REAL_R_OUT = MPI_DOUBLE_PRECISION
+    if(myid.eq.0) print*, 'Double to Single precision conversion'
   else
     if(myid.eq.0) print*, 'Error, invalid precision of input/output reals.'
     if(myid.eq.0) print*, 'Aborting...'
@@ -118,7 +128,7 @@ program convert_precision
       if(myid.eq.0) print*, 'Aborting...'
       exit
     endif
-    if(myid.eq.0) print*, 'File ',trim(fname),' successfully converted from ',r_in, ' to ', r_out, ' bytes.'
+    if(myid.eq.0) print*, 'File ',trim(fname),' successfully converted from ',r_in, ' to ', r_out, ' bytes per element.'
     if(myid.eq.0) print*, 'New file name: ', trim(fname)//trim(out_ext),' .'
   enddo
   call MPI_FINALIZE(ierr)

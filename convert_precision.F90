@@ -36,11 +36,11 @@ program convert_precision
   if(r_in == dp.and.r_out == sp) then
     MPI_REAL_R_IN  = MPI_DOUBLE_PRECISION
     MPI_REAL_R_OUT = MPI_REAL
-    if(myid == 0) print*, 'Single to Double precision conversion'
+    if(myid == 0) print*, 'Double to Single precision conversion'
   elseif(r_in == sp.and.r_out == dp) then
     MPI_REAL_R_IN  = MPI_REAL
     MPI_REAL_R_OUT = MPI_DOUBLE_PRECISION
-    if(myid == 0) print*, 'Double to Single precision conversion'
+    if(myid == 0) print*, 'Single to Double precision conversion'
   else
     if(myid == 0) print*, 'Error, invalid precision of input/output reals.'
     if(myid == 0) print*, 'Aborting...'

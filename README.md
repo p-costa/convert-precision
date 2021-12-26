@@ -1,6 +1,6 @@
 ### Convert Precision
 
-This Fortran program converts large binary files in parallel from/to single to/from double precision, using MPI-I/O. The code assumes that the each file contains *only* single- or double-precision floating-point.
+This Fortran program converts large binary files in parallel from/to single to/from double precision, using MPI-I/O. The code assumes that the each file contains *only* single- or double-precision floating-point numbers.
 
 ### Usage
 

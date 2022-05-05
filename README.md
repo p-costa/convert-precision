@@ -4,7 +4,7 @@ This Fortran program converts large binary files in parallel from/to single to/f
 
 ### Usage
 
-  1. Build the Fortran program:
+  1. build the Fortran program:
 ```bash
 mpif90 -O3 -D_SINGLE_TO_DOUBLE convert_precision.F90 -o single2double # executable for single-to-double conversion
 mpif90 -O3 -D_DOUBLE_TO_SINGLE convert_precision.F90 -o double2single # executable for double-to-single conversion

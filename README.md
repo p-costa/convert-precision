@@ -22,7 +22,7 @@ NUM_TASKS=16
 mpirun -n $NUM_TASKS ./double2single
 ```
 
-  4. done! the files with the same name as the uncoverted ones, are generated with the extension `.converted` appended, i.e., for the example above:
+  4. done! the converted files are generated with the same name as the original file, with the extension `.converted` appended, i.e., for the example above:
 ```bash
 $ ls *.converted
 a.bin.converted b.bin.converted c.bin.converted

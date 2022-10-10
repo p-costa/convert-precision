@@ -70,7 +70,7 @@ program convert_precision
     if(istatus /= 0) exit
     ! divide reals evenly
     nreals = filesize/r_in
-    if(myid+1.le.mod(nreals,int(nproc,kind(nreals)))) then
+    if(myid+1 <= mod(nreals,int(nproc,kind(nreals)))) then
       nreals_myid = nreals/nproc+1
     else
       nreals_myid = nreals/nproc
@@ -82,7 +82,7 @@ program convert_precision
     if(myid == 0) then
       disp = 0
     else
-      if(myid+1-1.le.mod(nreals,int(nproc,kind(nreals)))) then
+      if(myid+1-1 <= mod(nreals,int(nproc,kind(nreals)))) then
         disp = nreals/nproc+1
       else
         disp = nreals/nproc
